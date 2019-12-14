@@ -80,7 +80,7 @@ def generate():
                 '_edmask.jpg', cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE))
     # Edge-Connect处理
     mask_url = url_for(
-        'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_mask.png')
+        'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_edmask.jpg')
     return render_template('result.html', result=mask_url)
 
 # 还没用到

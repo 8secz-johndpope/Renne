@@ -1,5 +1,10 @@
 *.pth
 *.caffemodel
 *.prototxt
+*.jpg
+*.png
+*.jpeg
+*.msk
+
 openpose_cv
 __pycache__
