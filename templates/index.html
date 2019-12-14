@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<!-- 所有页面的模板 -->
+<head>
+    <style>
+        div {
+            border: 1px solid red;
+        }
+    </style>
+    <title>Nothing Generator</title>
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>    
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+    <div id="container" style="position: relative;">
+        <div id="header">
+            <h2 id="main-header">What was there just now? Nothing.</h2>
+        </div>
+        <div id="workplace" style="position: relative; width: 80%; float: left;">{% block workplace %}{% endblock %}
+        </div>
+        <div id="menu" style="position: relative; width: 20%; float: left;">{% block menu %}{% endblock %}
+        </div>
+    </div>
+    <form action="/exit" method="post"></form>
+    <script>
+    </script>
+    {% block bodyscript %}
+    {% endblock %}
+</body>
+
+</html>

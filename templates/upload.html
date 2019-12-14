@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+<!-- 上传文件页面 -->
+{% block head %}
+    <title>Select Mask</title>
+    <style>
+        /* 测试可以先写在这里面 */
+    </style>
+    <!-- css文件存储在static/css下，通过下面的方式调用 -->
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}"> -->
+
+{% endblock %}
+{% block workplace %}
+<div id='workplace' style="text-align: center;">
+<h1>Photo Upload</h1>
+<form action='/upload' method='post' enctype='multipart/form-data'>
+     <input type='file' name='file'>
+     <input type='submit' value='upload'>
+</form>
+</div>
+{% endblock %}
+{% block menu %}{% endblock %}
+{% block bodyscript %}{% endblock %}

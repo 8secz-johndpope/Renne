@@ -1,0 +1,5 @@
+*.pth
+*.caffemodel
+*.prototxt
+openpose_cv
+__pycache__
