@@ -61,11 +61,15 @@ def modify_image():
     masks = joblib.load(session['path'].split('.')[0] + '.msk')
     mask = segout.mask_generate(masks, check_result)
     (height, width) = mask.shape
+    maskcode = cv2.imencode('.png',  cv2.merge(
+        [mask * 0 for i in range(2)] + [mask * 255 for i in range(2)]))[1].tostring()
+    mask_url = 'data:image/png;base64,' + str(base64.b64encode(maskcode))[2:-1]
 
-    cv2.imwrite(session['path'].split('.')[0] + '_mask.png',
-                cv2.merge([mask * 0 for i in range(2)] + [mask * 255 for i in range(2)]))
-    mask_url = url_for(
-        'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_mask.png')
+    # cv2.imwrite(session['path'].split('.')[0] + '_mask.png',
+    #             cv2.merge([mask * 0 for i in range(2)] + [mask * 255 for i in range(2)]))
+    # mask_url = url_for(
+    #     'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_mask.png')
+
     file_url = url_for('uploaded_file', filename=session['name'])
 
     return render_template('modify.html', mask=mask_url, image=file_url, width=width, height=height)
