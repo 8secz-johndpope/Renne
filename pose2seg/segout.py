@@ -10,7 +10,7 @@ def pose_seg(img, poses):
         torch.cuda.empty_cache()
         model = torch.load('models/pose2seg-full.pth').cuda().eval()
     else:
-        model = torch.load('models/pose2seg-full.pth').eval()
+        model = torch.load('models/pose2seg-full.pth', map_location=torch.device('cpu')).eval()
     masks = []
     for pose in poses:
         masks.append(model([img.astype(float)], [[pose]])[0][0])

@@ -1,0 +1,9 @@
+apt update
+apt install -y libsm6 libxrender1 libfontconfig1
+apt install -y python3-pip git
+git clone https://github.com/Joinn99/Renne
+cd Renne
+cd models
+wget https://www.dropbox.com/s/nah0kwsralwda0b/pose2seg-full.pth
+wget https://www.dropbox.com/s/9ubmrc0chgedgza/openpose-pytorch.pth
+cd ..

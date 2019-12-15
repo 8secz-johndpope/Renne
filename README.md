@@ -10,13 +10,13 @@ Put the openpose and pose2seg model in models/
 
 [Github: pytorch-openpose](https://github.com/Hzzone/pytorch-openpose)
 
-[model](https://www.dropbox.com/sh/7xbup2qsn7vvjxo/AABWFksdlgOMXR_r5v3RwKRYa?dl=0)
+[model](https://www.dropbox.com/s/9ubmrc0chgedgza/openpose-pytorch.pth?dl=0)
 
 ##### Pose2Seg
 
 [Github: pose2seg](https://github.com/liruilong940607/Pose2Seg)
 
-[model](https://drive.google.com/file/d/193i8b40MJFxawcJoNLq1sG0vhAeLoVJG/view?usp=sharing)
+[model](https://www.dropbox.com/s/nah0kwsralwda0b/pose2seg-full.pth?dl=0)
 
 ##### Edge-Connect
 

@@ -11,10 +11,10 @@ def detect_pose(oriImg):
 
     if torch.cuda.is_available():
         openpose = model.bodypose_model().cuda().eval()
+        openpose.load_state_dict(torch.load('models/openpose-pytorch.pth'))
     else:
         openpose = model.bodypose_model().eval()
-        
-    openpose.load_state_dict(torch.load('models/openpose-pytorch.pth'))
+        openpose.load_state_dict(torch.load('models/openpose-pytorch.pth', map_location=torch.device('cpu')))
 
     # scale_search = [0.5, 1.0, 1.5, 2.0]
     scale_search = [0.5]
