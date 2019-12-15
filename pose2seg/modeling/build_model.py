@@ -44,10 +44,17 @@ class Pose2Seg(nn.Module):
         mean = (0.485, 0.456, 0.406)
         std = (0.229, 0.224, 0.225)
         self.mean = np.ones((self.size_input, self.size_input, 3)) * mean
-        self.mean = torch.from_numpy(self.mean.transpose(2, 0, 1)).cuda(0).float()
+        if torch.cuda.is_available():
+            self.mean = torch.from_numpy(self.mean.transpose(2, 0, 1)).cuda(0).float()
+        else:
+            self.mean = torch.from_numpy(self.mean.transpose(2, 0, 1)).float()
         
         self.std = np.ones((self.size_input, self.size_input, 3)) * std
-        self.std = torch.from_numpy(self.std.transpose(2, 0, 1)).cuda(0).float()
+        if torch.cuda.is_available():
+            self.std = torch.from_numpy(self.std.transpose(2, 0, 1)).cuda(0).float()
+        else:
+            self.std = torch.from_numpy(self.std.transpose(2, 0, 1)).float()
+
         self.visCount = 0
         
         pass
@@ -175,7 +182,10 @@ class Pose2Seg(nn.Module):
         ##                                       std=[0.229, 0.224, 0.225])
         ## Note: input[channel] = (input[channel] - mean[channel]) / std[channel], input is (0,1), not (0,255)
         #########################################################################################################
-        inputs = (torch.from_numpy(self.inputs).cuda(0) / 255.0 - self.mean) / self.std
+        if torch.cuda.is_available():
+            inputs = (torch.from_numpy(self.inputs).cuda(0) / 255.0 - self.mean) / self.std
+        else:
+            inputs = (torch.from_numpy(self.inputs) / 255.0 - self.mean) / self.std
         [p1, p2, p3, p4] = self.backbone(inputs)
         feature = p1
         
@@ -188,7 +198,10 @@ class Pose2Seg(nn.Module):
 
         if self.cat_skeleton:
             skeletons = np.vstack(self.skeletonFeats)
-            skeletons = torch.from_numpy(skeletons).float().cuda(0)
+            if torch.cuda.is_available():
+                skeletons = torch.from_numpy(skeletons).float().cuda(0)
+            else:
+                skeletons = torch.from_numpy(skeletons).float()
             rois = torch.cat((rois, skeletons), 1)
         
         netOutput = self.segnet(rois)
@@ -215,7 +228,10 @@ class Pose2Seg(nn.Module):
         for masks, Matrixs in zip(self.batchmasks, self.maskAlignMatrixs):
             for mask, matrix in zip(masks, Matrixs):
                 gts.append(cv2.warpAffine(mask, matrix[0:2], (self.size_output, self.size_output)))
-        gts = torch.from_numpy(np.array(gts)).long().cuda(0)
+        if torch.cuda.is_available():
+            gts = torch.from_numpy(np.array(gts)).long().cuda(0)
+        else:
+            gts = torch.from_numpy(np.array(gts)).long()
         
         loss = mask_loss_func(netOutput, gts)
         return loss

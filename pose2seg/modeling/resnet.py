@@ -341,9 +341,15 @@ if __name__ == '__main__':
     from torch.autograd import Variable
 
     #backbone_net = resnet101(pretrained=True, num_classes=1000).cuda()
-    backbone_net = resnet50C4(pretrained=True, num_classes=None).cuda()
+    if torch.cuda.is_available():
+        backbone_net = resnet50C4(pretrained=True, num_classes=None).cuda()
+    else:
+        backbone_net = resnet50C4(pretrained=True, num_classes=None).cuda()
     
     backbone_net.train()
-    input = Variable(torch.randn(1, 3, 224, 224)).cuda()
+    if torch.cuda.is_available():
+        input = Variable(torch.randn(1, 3, 224, 224)).cuda()
+    else:
+        input = Variable(torch.randn(1, 3, 224, 224))
     output = backbone_net(input)
     print (output.shape)
