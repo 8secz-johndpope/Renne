@@ -9,25 +9,28 @@
     <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}"> -->
 {% endblock %}
 {% block workplace %}
-<div id='workplace' style="text-align: center;">
-    <svg id='map' xmlns="http://www.w3.org/2000/svg" version="1.1" style="width:800px; height:800px;">
-        <image xlink:href="{{ image }}"/>
+    <img src="{{ image }}", alt="source" style="position: absolute; top: 0px; left: 0px;">
+    <svg id='map' xmlns="http://www.w3.org/2000/svg" version="1.1" style="position: absolute; top: 0px; left: 0px;">
+        <!-- <image xlink:href="{{ image }}"/> -->
         {% for poly in poly_list: %}
         <polygon class="person" points="{{ poly }}" style="opacity: 0.5; fill:#DD2222; stroke:#00000000; stroke-width:1" selection="1" />
         {% endfor %}
     </svg>
-</div>
-<form id='confirm' action="/modify" method="post" onsubmit="">
-    {% for poly in poly_list: %}
-    <input class='check' type="checkbox" value="1" checked=true>
-    {% endfor %}
-    <button type="submit">Confirm</button>
-</form>
 {% endblock %}
-{% block menu %}{% endblock %}
+{% block menu %}
+    <form id='confirm' action="/modify" method="post" onsubmit="">
+        {% for poly in poly_list: %}
+        <input class='check' type="checkbox" value="1" checked=true style="display: none;">
+        {% endfor %}
+        <button type="submit">Confirm</button>
+    </form>
+{% endblock %}
 {% block bodyscript %}
 <script>
     $(document).ready(function(){
+        $("#workplace").css("width", "{{ width }}").css("height", "{{ height }}")
+        $("#map").css("width", "{{ width }}").css("height", "{{ height }}")
+
         $(".person").fadeTo(1, 0.25);
         $(".person").click(function(){
             if($(this).attr("selection") == "1"){

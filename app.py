@@ -45,13 +45,16 @@ def select():
             file.save(session['path'])
             file_url = url_for('uploaded_file', filename=session['name'])
 
-            poses = body.detect_pose(cv2.imread(session['path']))
-            masks = segout.pose_seg(cv2.imread(session['path']), poses)
+            img = cv2.imread(session['path'])
+            (height, width) = img[:, :, 0].shape
+            cv2.imwrite(session['path'], img)
+            poses = body.detect_pose(img)
+            masks = segout.pose_seg(img, poses)
 
             joblib.dump((masks), session['path'].split(
                 '.')[0] + '.msk', compress=3)
             mask_poly = [segout.mask2poly(mask) for mask in masks]
-            return render_template('select.html', poly_list=mask_poly, image=file_url)
+            return render_template('select.html', poly_list=mask_poly, image=file_url, width=width, height=height)
     return redirect(url_for('upload_file'))
 
 # 页面2：选择人物蒙版->编辑蒙版
@@ -61,7 +64,7 @@ def modify_image():
     masks = joblib.load(session['path'].split('.')[0] + '.msk')
     mask = segout.mask_generate(masks, check_result)
     (height, width) = mask.shape
-    maskcode = cv2.imencode('.png',  cv2.merge(
+    maskcode = cv2.imencode('.png', cv2.merge(
         [mask * 0 for i in range(2)] + [mask * 255 for i in range(2)]))[1].tostring()
     mask_url = 'data:image/png;base64,' + str(base64.b64encode(maskcode))[2:-1]
 
