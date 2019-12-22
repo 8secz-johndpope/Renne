@@ -2,32 +2,35 @@
 <html>
 <!-- 所有页面的模板 -->
 <head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <style>
-        div {
-            border: 1px solid red;
+        @font-face {
+        font-family: "DefaultFont";
+        src: url("{{ url_for('static', filename='font/HYShiGuangTiW.ttf') }}");
+        }
+        body {
+            background-image: url("{{ url_for('static', filename='data/background.jpg') }}");
         }
     </style>
-    <title>Nothing Generator</title>
-    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>    
-    {% block head %}
+    <title>人呢？</title>
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/atom.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">    
     {% endblock %}
 </head>
 
 <body>
-    <div id="container" style="position: relative;">
-        <div id="header">
-            <h2 id="main-header">What was there just now? Nothing.</h2>
+    <canvas id='atom'></canvas>
+    <div id="container">
+        <div id="menu">{% block menu %}{% endblock %}
         </div>
-        <div id="workplace" style="position: relative; width: 80%; float: left; text-align: center;">{% block workplace %}{% endblock %}
-        </div>
-        <div id="menu" style="position: relative; width: 20%; float: left; text-align: center;">{% block menu %}{% endblock %}
+        <div id="workplace">{% block workplace %}{% endblock %}
         </div>
     </div>
-    <form action="/exit" method="post"></form>
-    <script>
-    </script>
     {% block bodyscript %}
     {% endblock %}
 </body>
-
 </html>

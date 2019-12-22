@@ -42,5 +42,5 @@ def extract_mask(path):
 
 
 if __name__ == "__main__":
-    IMG = cv2.imread('upload/474906011647662793.jpg')
+    IMG = cv2.imread('static/data/000158.jpg')
     img2seg(IMG)

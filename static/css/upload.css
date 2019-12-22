@@ -1,0 +1,23 @@
+div#workplace {
+    margin-left: 30%;
+    margin-right: 30%;
+    height: 100%;
+    background-color: #111111bb;
+    border-left:1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+    box-shadow: 5px 5px 10px #000000dd;
+}
+
+div#menu {
+    display: none;
+}
+
+a {
+    pointer-events: all;
+    color: steelblue;
+    text-decoration: none;
+  }
+
+p {
+    font-size: 10pt;
+}

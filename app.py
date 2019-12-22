@@ -50,7 +50,6 @@ def select():
             cv2.imwrite(session['path'], img)
             poses = body.detect_pose(img)
             masks = segout.pose_seg(img, poses)
-
             joblib.dump((masks), session['path'].split(
                 '.')[0] + '.msk', compress=3)
             mask_poly = [segout.mask2poly(mask) for mask in masks]
@@ -81,6 +80,7 @@ def modify_image():
 @app.route('/result', methods=['GET', 'POST'])
 def generate():
     mask = request.form.get('maskgen')
+    print(len(mask))
     maskdata = base64.b64decode(mask.split(',', 1)[1])
     img_array = np.fromstring(maskdata, np.uint8)
     cv2.imwrite(session['path'].split('.')[0] +
@@ -102,4 +102,4 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)

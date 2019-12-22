@@ -1,58 +1,86 @@
 {% extends "index.html" %}
 <!-- 选择人物蒙版页面 -->
 {% block head %}
-    <title>Upload File</title>
-    <style>
-        /* 测试可以先写在这里面 */
-    </style>
-    <!-- css文件存储在static/css下，通过下面的方式调用 -->
-    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}"> -->
+    {{ super() }}
+    <title>人呢？ - 选择人像</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select.css') }}">  
 {% endblock %}
 {% block workplace %}
-    <img src="{{ image }}", alt="source" style="position: absolute; top: 0px; left: 0px;">
-    <svg id='map' xmlns="http://www.w3.org/2000/svg" version="1.1" style="position: absolute; top: 0px; left: 0px;">
-        <!-- <image xlink:href="{{ image }}"/> -->
-        {% for poly in poly_list: %}
-        <polygon class="person" points="{{ poly }}" style="opacity: 0.5; fill:#DD2222; stroke:#00000000; stroke-width:1" selection="1" />
-        {% endfor %}
-    </svg>
+    <div id="region">
+        <img id="target" src="{{ image }}" alt="source">
+        <svg id='map' xmlns="http://www.w3.org/2000/svg" version="1.1">
+            <!-- <image xlink:href="{{ image }}"/> -->
+            {% for poly in poly_list: %}
+            <polygon class="person" points="{{ poly }}" selection="1" />
+            {% endfor %}
+        </svg>
+    </div>
 {% endblock %}
 {% block menu %}
-    <form id='confirm' action="/modify" method="post" onsubmit="">
-        {% for poly in poly_list: %}
-        <input class='check' type="checkbox" value="1" checked=true style="display: none;">
-        {% endfor %}
-        <button type="submit">Confirm</button>
-    </form>
+    <div style="width: 20%;">
+        <span style="font-size: 20px;">人呢？ Renne</span>
+    </div>
+    <div style="width: 45%;">
+        <span id="info"></span>
+    </div>
+    <div style="width: 20%;">
+        <form id='confirm' action="/modify" method="post" onsubmit="">
+            {% for poly in poly_list: %}
+            <input class='check' type="checkbox" value="1" checked=true style="display: none;">
+            {% endfor %}
+            <button type="submit" class="btn" >Confirm</button>
+        </form>
+    </div>
 {% endblock %}
 {% block bodyscript %}
 <script>
-    $(document).ready(function(){
-        $("#workplace").css("width", "{{ width }}").css("height", "{{ height }}")
-        $("#map").css("width", "{{ width }}").css("height", "{{ height }}")
-
-        $(".person").fadeTo(1, 0.25);
-        $(".person").click(function(){
-            if($(this).attr("selection") == "1"){
-                $(this).attr("selection", "0").css("fill", "#22DD22");
-            }
-            else{
-                $(this).attr("selection", "1").css("fill", "#DD2222");
-            }
-        });
-        $(".person").hover(function(){
-            $(this).fadeTo(100,0.5);
-        },function(){
-            $(this).fadeTo(100,0.25);
-        });
-        $("#confirm").submit(function(){                
-            var select = document.getElementsByClassName("person");
-            var checkbox = document.getElementsByClassName("check");
-            for(i = 0; i < select.length; i++){
-                checkbox[i].setAttribute("value", select[i].getAttribute("selection"));
-                checkbox[i].setAttribute("name", i);
-            }
-        });
+$(document).ready(function () {
+    var resizeTimer = null;
+    $("#map").css("width", "{{ width }}").css("height", "{{ height }}");
+    resize_event();
+    $(".person").fadeTo(1, 0.25);
+    $(".person").click(function () {
+        if ($(this).attr("selection") == "1") {
+            $(this).attr("selection", "0").css("fill", "#22DD22");
+        }
+        else {
+            $(this).attr("selection", "1").css("fill", "#DD2222");
+        }
     });
+
+    $(".person").hover(function () {
+        $(this).fadeTo(100, 0.5);
+    }, function () {
+        $(this).fadeTo(100, 0.25);
+    });
+
+    $("#confirm").submit(function () {
+        var select = document.getElementsByClassName("person");
+        var checkbox = document.getElementsByClassName("check");
+        for (i = 0; i < select.length; i++) {
+            checkbox[i].setAttribute("value", select[i].getAttribute("selection"));
+            checkbox[i].setAttribute("name", i);
+        }
+    });
+    function resize_event() {
+        load_atom();
+        var height = parseInt($("#target").css("height"));
+        var width = parseInt($("#target").css("width"));
+        var ratio, offsetX, offsetY;
+        ratio = 0.95 * Math.min(0.9 * window.innerHeight / height, window.innerWidth / width);
+        offsetX = ratio * 0.5 * (window.innerWidth - width);
+        offsetY = ratio * 0.5 * (0.9 * window.innerHeight - height);
+        $("#region").css("transform", "translate(" + offsetX + "px," + offsetY + "px) " + "scale(" + ratio + ")");
+    }
+
+    $(window).resize(function () {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            resize_event();
+        }, 500);
+    });
+
+});
 </script>
+
 {% endblock %}

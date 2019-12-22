@@ -1,99 +1,137 @@
 {% extends "index.html" %}
 <!-- 编辑蒙版页面 -->
 {% block head %}
-    <title>Modify Mask</title>
-    <style>
-        /* 测试可以先写在这里面 */
-    </style>
+    {{ super() }}
+    <title>人呢？ - 编辑消除区域</title>
     <!-- css文件存储在static/css下，通过下面的方式调用 -->
-    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}"> -->
-{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modify.css') }}">
+    {% endblock %}
 {% block workplace %}
-    <img id="source" src="{{ image }}" alt="source" style="position:absolute; top: 0px; left: 0px;">
-    <img id="mask" src="{{ mask }}" alt="source" style="position:absolute; top: 0px; left: 0px; display: none;">
-    <canvas id="maskedit" style="position:absolute;  top: 0px; left: 0px; opacity: 0.4;"></canvas>
+    <div id="region">
+        <img id="source" src="{{ image }}" alt="source">
+        <img id="mask" src="{{ mask }}" alt="source">
+        <canvas id="maskedit"></canvas>
+    </div>
 {% endblock %}
 {% block menu %}
-    Width:
-    <select id="linewidth">
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-        <option value="20">20</option>
-        <option value="25" selected="selected">25</option>
-        <option value="30">30</option>
-    </select></br>
-    Mode: <button id="mode" value="pen" onclick="mode_change()">Pencil</button></br>
+<div style="width: 15%;">
+    <span>
+        <input class="slider" id="linewidth" type="range" min="1" max="80" step="1" value="25">
+    </span>
+</div>
+<div style="width: 20%;">
+</div>
+
+<div style="width: 30%;">
+    <button id="mode" value="pen" class="btn">Pencil</button>
+</div>
+<div style="width: 10%;">
     <form action="/result" method="POST" onsubmit="convert()">
-        <button id="generate" name="maskgen" type="submit">Generate</button>
+        <button id="generate" name="maskgen" class="btn" type="submit">Generate</button>
     </form>
+</div>
 {% endblock %}
 {% block bodyscript %}
-    <script>
-        $(document).ready(function () {
-            var mousePressed = false;
-            var lastX, lastY;
-            var canvas, ctx;
-            InitThis();
+<script>
+    var penmode = true;
+    var mousePressed = false;
+    var lastX, lastY;
+    var canvas, ctx;
+    
+    function convert() {
+            $("#generate").attr("value", document.getElementById("maskedit").toDataURL("image/jpeg"));
+        }
+
+
+    $(document).ready(function () {
+        var resizeTimer = null;
+        resize_event();
+        InitThis();
+    
+        $(window).resize(function () {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                resize_event();
+            }, 500);
+        });
+    
+        $("#mode").click(function() {
+            penmode = !penmode;
+            $(this).text((penmode) ? "Pencil" : "Eraser");
         });
 
+
+        function resize_event() {
+            load_atom();
+            var height = parseInt($("#source").css("height"));
+            var width = parseInt($("#source").css("width"));
+            var ratio, offsetX, offsetY;
+            ratio = 0.95 * Math.min(0.9 * window.innerHeight / height, window.innerWidth / width);
+            offsetX = ratio * 0.5 * (window.innerWidth - width);
+            offsetY = ratio * 0.5 * (0.9 * window.innerHeight - height);
+            $("#region").css("transform", "translate(" + offsetX + "px," + offsetY + "px) " + "scale(" + ratio + ")");
+        }
+    
         function InitThis() {
             canvas = document.getElementById('maskedit');
             ctx = document.getElementById('maskedit').getContext("2d");
-            $('#workplace').css("width", "{{ width }}").css("height", "{{ height }}");
             $('#maskedit').attr("width", "{{ width }}").attr("height", "{{ height }}");
             ctx.drawImage(document.getElementById("mask"),0,0);
             if(document.body.ontouchstart !== undefined) {
                 canvas.ontouchstart = function(e) {
+                    e.preventDefault();
                     mousePressed = true;
-                    if($("#mode").val()=="pen"){
-                        Draw(e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop, false);
+                    if(penmode){
+                        Draw(e.touches[0].offsetX, e.touches[0].offsetY, false);
                     }
                     else{
-                        Erase(e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop, true);
+                        Erase(e.touches[0].offsetX, e.touches[0].offsetY, true);
                     }
                 };
                 
                 canvas.ontouchmove = function(e) {
+                    e.preventDefault();
                     if (mousePressed) {
-                        if($("#mode").val()=="pen"){
-                            Draw(e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop, true);
+                        if(penmode){
+                            Draw(e.touches[0].offsetX, e.touches[0].offsetY, true);
                         }
                         else{
-                            Erase(e.touches[0].clientX - canvas.offsetLeft, e.touches[0].clientY - canvas.offsetTop, true);
+                            Erase(e.touches[0].offsetX, e.touches[0].offsetY, true);
                         }
                     }
                 };
-
+    
                 canvas.ontouchend = function(e) {
+                    e.preventDefault();
                     mousePressed = false;
                 };
                 canvas.ontouchcancel = function(e) {
+                    e.preventDefault();
                     mousePressed = false;
                 };
             }
             else {
                 $('#maskedit').mousedown(function (e) {
                     mousePressed = true;
-                    if($("#mode").val()=="pen"){
-                        Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
+                    if(penmode){
+                        Draw(e.offsetX, e.offsetY, false);
                     }
                     else{
-                        Erase(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                        Erase(e.offsetX, e.offsetY, true);
                     }
                 });
-
-                $('#maskedit').mousemove(function (e) {
+    
+                $('#maskedit').mousemove(function (e) {    
                     if (mousePressed) {
-                        if($("#mode").val()=="pen"){
-                            Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                        if(penmode){
+                            Draw(e.offsetX, e.offsetY, true);
                         }
                         else{
-                            Erase(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                            Erase(e.offsetX, e.offsetY, true);
                         }
                     }
                 });
-
+    
                 $('#maskedit').mouseup(function (e) {
                     mousePressed = false;
                 });
@@ -102,7 +140,7 @@
                 });
             }
         }
-
+    
         function Draw(x, y, isDown) {
             if (isDown) {
                 ctx.beginPath();
@@ -116,7 +154,7 @@
             }
             lastX = x; lastY = y;
         }
-
+    
         function Erase(x, y, isDown) {
             if (isDown) {
                 var width = $("#linewidth").val();
@@ -125,14 +163,9 @@
             }
             lastX = x; lastY = y;
         }
-
-        function clearArea() {
-            // Use the identity matrix while clearing the canvas
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        }
-
-        function mode_change() {
+    
+    
+        function  mode_change() {
             var mode = document.getElementById("mode");
             if(mode.getAttribute("value")=="pen"){
                 mode.setAttribute("value", "eraser");
@@ -143,9 +176,10 @@
                 mode.innerText = "Pencil";
             }
         }
+    
+    
+    });
+    
 
-        function convert() {
-            $("#generate").attr("value", document.getElementById("maskedit").toDataURL("image/jpeg"));
-        }
-    </script>
-    {% endblock %}
+</script>
+{% endblock %}

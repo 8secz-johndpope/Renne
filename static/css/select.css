@@ -1,0 +1,63 @@
+div#workplace {
+    overflow: visible;
+    position: relative;
+    width: 100%;
+    height: 90%;
+}
+
+div#menu {
+    position: relative;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 10%;
+    align-items: center;
+}
+
+img {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+svg#map {
+
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+button, span {
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translate(0, -50%);
+    -moz-transform: translate(0, -50%);
+    -ms-transform: translate(0, -50%);
+    -o-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+}
+
+button {
+    max-width: 20%;
+    max-height: 80%;
+}
+
+button:active {
+    top: 20%;
+    transform: translateY(-2px);
+    transition: 0.1s;
+  }
+
+
+button#mode {
+    height: 16px;
+}
+
+polygon {
+    opacity: 0.5;
+    fill:#DD2222;
+    stroke:#000000aa;
+    stroke-width: 5;
+    pointer-events:all;
+    cursor:pointer;
+}

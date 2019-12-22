@@ -1,14 +1,59 @@
 {% extends "index.html" %}
 <!-- 显示结果页面 -->
 {% block head %}
-    <title>Result</title>
-    <style>
-    </style>
+    {{ super() }}
+
+    <title>人呢？ - 消除结果</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modify.css') }}">
+
 {% endblock %}
 {% block workplace %}
+<div id="region">
     <img id="result" src="{{ result }}" alt="result">
+</div>
 {% endblock %}
 {% block menu %}
+<div style="width: 15%;">
+    <span style="font-size: 20px;">人呢？ Renne</span>
+</div>
+<div style="width: 20%;">
+</div>
+
+<div style="width: 30%;">
+    <button id="download" class="btn" onclick="document.getElementById('downres').click();">Download</button>
+    <a id="downres" href="{{ result }}" style="display: none;" download></a>
+</div>
+<div style="width: 10%;">
+    <form action="/upload" method="GET">
+        <button id="generate" name="maskgen" class="btn" type="submit">Back</button>
+    </form>
+</div>
+
 {% endblock %}
 {% block bodyscript %}
+<script>
+    $(document).ready(function(){
+        var resizeTimer = null;
+        resize_event();
+
+        $(window).resize(function () {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                resize_event();
+            }, 500);
+        });
+
+        function resize_event() {
+            load_atom();
+            var height = parseInt($("#result").css("height"));
+            var width = parseInt($("#result").css("width"));
+            var ratio, offsetX, offsetY;
+            ratio = 0.95 * Math.min(0.9 * window.innerHeight / height, window.innerWidth / width);
+            offsetX = ratio * 0.5 * (window.innerWidth - width);
+            offsetY = ratio * 0.5 * (0.9 * window.innerHeight - height);
+            $("#region").css("transform", "translate(" + offsetX + "px," + offsetY + "px) " + "scale(" + ratio + ")");
+        }
+
+    });
+</script>
     {% endblock %}

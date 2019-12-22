@@ -1,22 +1,40 @@
 {% extends "index.html" %}
 <!-- 上传文件页面 -->
 {% block head %}
-    <title>Select Mask</title>
-    <style>
-        /* 测试可以先写在这里面 */
-    </style>
-    <!-- css文件存储在static/css下，通过下面的方式调用 -->
-    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}"> -->
-
+    {{ super() }}
+    <title>人呢？ - Renne?</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}">    
 {% endblock %}
 {% block workplace %}
-<div id='workplace' style="text-align: center;">
-<h1>Photo Upload</h1>
-<form action='/upload' method='post' enctype='multipart/form-data'>
-     <input type='file' name='file'>
-     <input type='submit' value='upload'>
+<h1 style="font-size: 48pt; font-family: 'DefaultFont'">人呢？</h1>
+<h2 style="margin-top: -8%; font-family: 'DefaultFont'">RENNE?</h2>
+<p>“<span style="color:#3e8e41; font-weight: 700;">人呢？</span>“使用 <a href="https://github.com/liruilong940607/Pose2Seg">Pose2Seg</a>
+    语义分割模型及<a href="https://github.com/knazeri/edge-connect">Edge-Connect</a> 图像修复模型实现图片中的人像去除和修复工作。</p>
+<p>本应用使用了<a href="https://github.com/Hzzone/pytorch-openpose">OpenSeg</a>
+    检测图片中的人物形态，以便于Pose2Seg模型进行语义分割，这种方法保证您可以选择性的“删除”图片中出现的人物
+    与此同时，本应用允许您对模型自动生成的修补区域进行适当编辑，以提升图片修复的质量。</p>
+<form style='pointer-events: all;'  action='/upload' method='post' enctype='multipart/form-data'>
+    <a href="#" onclick="$('#imgup').click(); $('#imgsubmit').css('display','block')" class="btn">选择文件</a>
+    <input id='imgup' type='file' name='file' style="display: none;"></br>
+    <input id='imgsubmit' class='btn' type='submit' value='上传' style="display: none;">
 </form>
-</div>
 {% endblock %}
 {% block menu %}{% endblock %}
-{% block bodyscript %}{% endblock %}
+{% block bodyscript %}
+<script>
+    $(document).ready(function(){
+        load_atom();
+        $(window).resize(function(){
+            var param = 2.5 * (window.innerWidth / window.innerHeight - 0.8);
+            param = Math.round(15 + 15 * Math.max(Math.min(param, 1), 0));
+            $("#workplace").css("margin-left", param + "%").css("margin-right", param + "%");
+            $("#workplace").css("margin-left", param + "%").css("margin-right", param + "%");
+        });
+
+        document.getElementById('imgup').onchange = function() {
+            var url = $('#imgup').val().split('\\');
+            $('#imgsubmit').val('上传 ' + url[url.length - 1]);
+        };
+    });
+</script>
+{% endblock %}
