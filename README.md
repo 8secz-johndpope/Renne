@@ -22,7 +22,7 @@ Put the openpose and pose2seg model in models/
 
 [Github: edge-connect](https://github.com/knazeri/edge-connect)
 
-[model(optional)](https://github.com/knazeri/edge-connect#getting-started)
+[model](https://github.com/knazeri/edge-connect#getting-started)
 
 ### Run
 

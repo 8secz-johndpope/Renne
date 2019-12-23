@@ -1,4 +1,3 @@
-import torch
 import cv2
 import matplotlib.pyplot as plt
 import joblib
@@ -6,14 +5,14 @@ import joblib
 # from openpose_cv import cvpose
 from openpose_pytorch import body
 from pose2seg import segout
-
+from edge_connect import edgec
 # POSE2SEG: Pose2Seg model
 # IMG: Input Image      [H, W, 3]
 # POSE: Pose Points     [N, 17, 3]      Point [X, Y, V{0,1,2}]
 # MASKS: Mask Array     [N, H, W]       Array Range (0-1)
 
 
-SHOW_MASKS = True
+SHOW_MASKS = False
 
 # 测试蒙版生成
 def img2seg(img):
@@ -34,6 +33,9 @@ def img2seg(img):
 
     return masks
 
+def seg2img(img, mask):
+    out = edgec.inpaint(img, mask)
+    return out
 
 # 提取蒙版msk文件
 def extract_mask(path):
@@ -42,5 +44,9 @@ def extract_mask(path):
 
 
 if __name__ == "__main__":
-    IMG = cv2.imread('static/data/000158.jpg')
+    print('------------\nStart Test:')
+    IMG = cv2.imread('upload/street1.jpg')
+    MASK = cv2.imread('upload/737403967419482656_edmask.jpg', cv2.IMREAD_GRAYSCALE)
     img2seg(IMG)
+    seg2img(IMG, MASK)
+    print('Test success.')

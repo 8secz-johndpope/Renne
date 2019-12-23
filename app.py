@@ -10,6 +10,7 @@ from flask import Flask, request, url_for, send_from_directory, render_template,
 from werkzeug import secure_filename
 from openpose_pytorch import body
 from pose2seg import segout
+from edge_connect import edgec
 
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -67,11 +68,6 @@ def modify_image():
         [mask * 0 for i in range(2)] + [mask * 255 for i in range(2)]))[1].tostring()
     mask_url = 'data:image/png;base64,' + str(base64.b64encode(maskcode))[2:-1]
 
-    # cv2.imwrite(session['path'].split('.')[0] + '_mask.png',
-    #             cv2.merge([mask * 0 for i in range(2)] + [mask * 255 for i in range(2)]))
-    # mask_url = url_for(
-    #     'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_mask.png')
-
     file_url = url_for('uploaded_file', filename=session['name'])
 
     return render_template('modify.html', mask=mask_url, image=file_url, width=width, height=height)
@@ -80,15 +76,15 @@ def modify_image():
 @app.route('/result', methods=['GET', 'POST'])
 def generate():
     mask = request.form.get('maskgen')
-    print(len(mask))
     maskdata = base64.b64decode(mask.split(',', 1)[1])
     img_array = np.fromstring(maskdata, np.uint8)
-    cv2.imwrite(session['path'].split('.')[0] +
-                '_edmask.jpg', cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE))
     # Edge-Connect处理
-    mask_url = url_for(
-        'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_edmask.jpg')
-    return render_template('result.html', result=mask_url)
+    inpainted = edgec.inpaint(cv2.imread(
+        session['path']), cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE))
+    cv2.imwrite(session['path'].split('.')[0] + '_result.jpg', inpainted)
+    res_url = url_for(
+        'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_result.jpg')
+    return render_template('result.html', result=res_url)
 
 # 还没用到
 @app.route('/exit', methods=['GET', 'POST'])
@@ -102,4 +98,4 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0')

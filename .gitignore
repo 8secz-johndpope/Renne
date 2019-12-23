@@ -1,7 +1,7 @@
 *.pth
 *.caffemodel
 *.prototxt
-*.jpg
+upload/*.jpg
 *.png
 *.jpeg
 *.msk
