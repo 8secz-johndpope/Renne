@@ -3,18 +3,19 @@ import torch
 import cv2
 # from pose2seg.modeling.build_model import Pose2Seg
 
-
-def pose_seg(img, poses):
-
+def seg_init():
     if torch.cuda.is_available():
-        torch.cuda.empty_cache()
         model = torch.load('models/pose2seg-full.pth').cuda().eval()
     else:
         model = torch.load('models/pose2seg-full.pth',
                            map_location=torch.device('cpu')).eval()
+    return model
+
+def pose_seg(img, poses, seg):
+
     masks = []
     for pose in poses:
-        masks.append(model([img.astype(float)], [[pose]])[0][0])
+        masks.append(seg([img.astype(float)], [[pose]])[0][0])
     if masks:
         masks = deal_masks(masks)
         masks = denoise(masks, 16)

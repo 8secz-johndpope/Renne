@@ -11,6 +11,9 @@ from edge_connect import edgec
 # POSE: Pose Points     [N, 17, 3]      Point [X, Y, V{0,1,2}]
 # MASKS: Mask Array     [N, H, W]       Array Range (0-1)
 
+POSE = body.pose_init()
+SEG = segout.seg_init()
+EDGE, INPAINT = edgec.edge_init()
 
 SHOW_MASKS = False
 
@@ -20,9 +23,9 @@ def img2seg(img):
     # poses = cvpose.detect_pose(img)
 
     # Detect Pose(Pytorch)
-    poses = body.detect_pose(img)
+    poses = body.detect_pose(img, POSE)
     # Detect Segmentations using Poses
-    masks = segout.pose_seg(img, poses)
+    masks = segout.pose_seg(img, poses, SEG)
     # Draw Masks
     if SHOW_MASKS:
         for mask in masks:
@@ -34,7 +37,7 @@ def img2seg(img):
     return masks
 
 def seg2img(img, mask):
-    out = edgec.inpaint(img, mask)
+    out = edgec.inpaint(img, mask, EDGE, INPAINT)
     return out
 
 # 提取蒙版msk文件
@@ -48,5 +51,5 @@ if __name__ == "__main__":
     IMG = cv2.imread('static/data/model_test.jpg')
     MASK = cv2.imread('static/data/model_test_mask.jpg', cv2.IMREAD_GRAYSCALE)
     img2seg(IMG)
-    # seg2img(IMG, MASK)
+    seg2img(IMG, MASK)
     print('Test success.')

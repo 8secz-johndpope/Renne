@@ -6,16 +6,16 @@ from scipy.ndimage.filters import gaussian_filter
 
 from openpose_pytorch import model, util
 
-
-def detect_pose(oriImg):
-
+def pose_init():
     if torch.cuda.is_available():
         openpose = model.bodypose_model().cuda().eval()
         openpose.load_state_dict(torch.load('models/openpose-pytorch.pth'))
     else:
         openpose = model.bodypose_model().eval()
         openpose.load_state_dict(torch.load('models/openpose-pytorch.pth', map_location=torch.device('cpu')))
+    return openpose
 
+def detect_pose(oriImg, openpose):
     # scale_search = [0.5, 1.0, 1.5, 2.0]
     scale_search = [0.5]
     boxsize = 512
@@ -214,6 +214,7 @@ def generate_output(key_points, person_points):
     return np.delete(pose, 1, axis=1)
 
 if __name__ == "__main__":
+    OPEN = pose_init()
     test_image = '../images/ski.jpg'
     Img = cv2.imread(test_image)  # B,G,R order
-    pose = detect_pose(Img)
+    pose = detect_pose(Img, OPEN)

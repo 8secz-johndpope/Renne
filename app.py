@@ -20,6 +20,9 @@ app.secret_key = str(hash(time.time()))
 app.config['UPLOAD_FOLDER'] = os.getcwd() + '/upload'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
+POSE = body.pose_init()
+SEG = segout.seg_init()
+EDGE, INPAINT = edgec.edge_init()
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -51,8 +54,8 @@ def select():
             img = cv2.resize(img, None, fx=ratio, fy=ratio)
             (height, width) = img.shape[:2]
             cv2.imwrite(session['path'].split('.')[0] + '_resize.jpg', img)
-            poses = body.detect_pose(img)
-            masks = segout.pose_seg(img, poses)
+            poses = body.detect_pose(img, POSE)
+            masks = segout.pose_seg(img, poses, SEG)
             joblib.dump((masks), session['path'].split(
                 '.')[0] + '.msk', compress=3)
             mask_poly = [segout.mask2poly(mask) for mask in masks]
@@ -82,7 +85,7 @@ def generate():
     img_array = np.fromstring(maskdata, np.uint8)
     # Edge-Connect处理
     inpainted = edgec.inpaint(cv2.imread(
-        session['path'].split('.')[0] + '_resize.jpg'), cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE))
+        session['path'].split('.')[0] + '_resize.jpg'), cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE), EDGE, INPAINT)
     cv2.imwrite(session['path'].split('.')[0] + '_result.jpg', inpainted)
     res_url = url_for(
         'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_result.jpg')
