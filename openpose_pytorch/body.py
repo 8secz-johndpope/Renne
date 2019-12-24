@@ -18,7 +18,7 @@ def detect_pose(oriImg):
 
     # scale_search = [0.5, 1.0, 1.5, 2.0]
     scale_search = [0.5]
-    boxsize = 368
+    boxsize = 512
     stride = 8
     padValue = 128
     thre1 = 0.1

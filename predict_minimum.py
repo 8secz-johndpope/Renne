@@ -45,8 +45,8 @@ def extract_mask(path):
 
 if __name__ == "__main__":
     print('------------\nStart Test:')
-    IMG = cv2.imread('upload/street1.jpg')
-    MASK = cv2.imread('upload/737403967419482656_edmask.jpg', cv2.IMREAD_GRAYSCALE)
+    IMG = cv2.imread('static/data/model_test.jpg')
+    MASK = cv2.imread('static/data/model_test_mask.jpg', cv2.IMREAD_GRAYSCALE)
     img2seg(IMG)
-    seg2img(IMG, MASK)
+    # seg2img(IMG, MASK)
     print('Test success.')

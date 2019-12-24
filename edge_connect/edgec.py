@@ -29,7 +29,6 @@ def inpaint(img_ori, mask_ori):
     edge = torch.unsqueeze(torch.unsqueeze(torch.from_numpy(edge).float(), 0), 0).to(configs['DEVICE'])
 
     edge = edge_model(img_gray, edge, mask).detach()
-
     outputs = inpaint_model(img.to(configs['DEVICE']), edge, mask)
     img_out = (outputs * 255.0).int().permute(0, 2, 3, 1).cpu().numpy().astype(np.uint8).squeeze()
     img_out = cv2.resize(cv2.cvtColor(img_out, cv2.COLOR_RGB2BGR), (img_ori.shape[1], img_ori.shape[0]))
@@ -42,14 +41,16 @@ def inpaint(img_ori, mask_ori):
 
 def preprocess(img_ori, mask_ori):
     # img = cv2.imread(img_path)
-    # img = cv2.resize(img_ori, (324, 324), interpolation=cv2.INTER_AREA)
-    img = cv2.cvtColor(img_ori, cv2.COLOR_BGR2RGB)
+
+    img = cv2.resize(img_ori, (512, 512), interpolation=cv2.INTER_AREA)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
     # mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-    # mask = cv2.resize(mask_ori, (324, 324), interpolation=cv2.INTER_AREA)
-    mask = (mask_ori > 0)
+    mask = cv2.resize(mask_ori, (512, 512), interpolation=cv2.INTER_AREA)
+    mask = (mask > 0)
     edge = canny(img_gray, sigma=2, mask=~mask).astype(np.float)
+
     return img.transpose(2, 0, 1).astype(np.float) / 255.0, img_gray.astype(np.float) / 255.0, mask.astype(np.float), edge.astype(np.float)
 
 

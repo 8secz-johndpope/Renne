@@ -47,8 +47,10 @@ def select():
             file_url = url_for('uploaded_file', filename=session['name'])
 
             img = cv2.imread(session['path'])
-            (height, width) = img[:, :, 0].shape
-            cv2.imwrite(session['path'], img)
+            ratio = np.min((1.0, 800.0 / np.max(img.shape[:2])))
+            img = cv2.resize(img, None, fx=ratio, fy=ratio)
+            (height, width) = img.shape[:2]
+            cv2.imwrite(session['path'].split('.')[0] + '_resize.jpg', img)
             poses = body.detect_pose(img)
             masks = segout.pose_seg(img, poses)
             joblib.dump((masks), session['path'].split(
@@ -80,7 +82,7 @@ def generate():
     img_array = np.fromstring(maskdata, np.uint8)
     # Edge-Connect处理
     inpainted = edgec.inpaint(cv2.imread(
-        session['path']), cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE))
+        session['path'].split('.')[0] + '_resize.jpg'), cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE))
     cv2.imwrite(session['path'].split('.')[0] + '_result.jpg', inpainted)
     res_url = url_for(
         'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_result.jpg')
