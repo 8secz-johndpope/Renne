@@ -168,11 +168,11 @@
         resize_event();
 
     });
-    
+
     function resize_event() {
             load_atom();
-            var height = parseInt($("#source").css("height"));
-            var width = parseInt($("#source").css("width"));
+            var height = parseInt("{{ height }}");
+            var width = parseInt("{{ width }}");
             var ratio, offsetX, offsetY;
             ratio = 0.95 * Math.min(0.9 * window.innerHeight / height, window.innerWidth / width);
             offsetX = ratio * 0.5 * (window.innerWidth - width);

@@ -86,10 +86,11 @@ def generate():
     # Edge-Connect处理
     inpainted = edgec.inpaint(cv2.imread(
         session['path'].split('.')[0] + '_resize.jpg'), cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE), EDGE, INPAINT)
+    (height, width) = inpainted.shape
     cv2.imwrite(session['path'].split('.')[0] + '_result.jpg', inpainted)
     res_url = url_for(
         'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_result.jpg')
-    return render_template('result.html', result=res_url)
+    return render_template('result.html', result=res_url, width=width, height=height)
 
 # 还没用到
 @app.route('/exit', methods=['GET', 'POST'])
