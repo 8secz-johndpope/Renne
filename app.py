@@ -59,7 +59,7 @@ def select():
                 '.')[0] + '.msk', compress=3)
             mask_poly = [segout.mask2poly(mask) for mask in masks]
 
-            file_url = url_for('uploaded_file', filename=session['path'].split('.')[0] + '_resize.jpg')
+            file_url = url_for('uploaded_file', filename=session['name'].split('.')[0] + '_resize.jpg')
 
             return render_template('select.html', poly_list=mask_poly, image=file_url, width=width, height=height)
     return redirect(url_for('upload_file'))
