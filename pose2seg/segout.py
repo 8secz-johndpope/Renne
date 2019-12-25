@@ -37,8 +37,8 @@ def mask2poly(img):
 
 
 def mask_generate(masks, options):
-    options = dict(sorted(options.items(), key=lambda item: int(item[0])))
-    options = np.array(list(options.values())).astype(np.uint8)
+    options = sorted(options.values(), key=lambda item: int(item[0]))
+    options = np.array(options).astype(np.uint8)
     mask = np.tensordot(options, masks, 1).astype(bool).astype(np.uint8)
     return mask
 

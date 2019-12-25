@@ -61,7 +61,17 @@ $(document).ready(function () {
             checkbox[i].setAttribute("name", i);
         }
     });
-    function resize_event() {
+
+    $(window).resize(function () {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            resize_event();
+        }, 500);
+    });
+    resize_event();
+});
+
+function resize_event() {
         load_atom();
         var height = parseInt($("#target").css("height"));
         var width = parseInt($("#target").css("width"));
@@ -72,14 +82,6 @@ $(document).ready(function () {
         $("#region").css("transform", "translate(" + offsetX + "px," + offsetY + "px) " + "scale(" + ratio + ")");
     }
 
-    $(window).resize(function () {
-        if (resizeTimer) clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            resize_event();
-        }, 500);
-    });
-    resize_event();
-});
 </script>
 
 {% endblock %}
