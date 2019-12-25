@@ -47,7 +47,6 @@ def select():
             session['path'] = os.path.join(
                 app.config['UPLOAD_FOLDER'], session['name'])
             file.save(session['path'])
-            file_url = url_for('uploaded_file', filename=session['name'])
 
             img = cv2.imread(session['path'])
             ratio = np.min((1.0, 800.0 / np.max(img.shape[:2])))
@@ -59,6 +58,9 @@ def select():
             joblib.dump((masks), session['path'].split(
                 '.')[0] + '.msk', compress=3)
             mask_poly = [segout.mask2poly(mask) for mask in masks]
+
+            file_url = url_for('uploaded_file', filename=session['path'].split('.')[0] + '_resize.jpg')
+
             return render_template('select.html', poly_list=mask_poly, image=file_url, width=width, height=height)
     return redirect(url_for('upload_file'))
 
@@ -86,7 +88,7 @@ def generate():
     # Edge-Connect处理
     inpainted = edgec.inpaint(cv2.imread(
         session['path'].split('.')[0] + '_resize.jpg'), cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE), EDGE, INPAINT)
-    (height, width) = inpainted.shape
+    (height, width) = inpainted.shape[:2]
     cv2.imwrite(session['path'].split('.')[0] + '_result.jpg', inpainted)
     res_url = url_for(
         'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_result.jpg')

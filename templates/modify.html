@@ -67,7 +67,7 @@
             ctx.drawImage(document.getElementById("mask"),0,0);
             if(document.body.ontouchstart !== undefined) {
                 canvas.ontouchstart = function(e) {
-                    e.preventDefault();
+                    // e.preventDefault();
                     mousePressed = true;
                     if(penmode){
                         Draw(e.touches[0].offsetX, e.touches[0].offsetY, false);
@@ -78,7 +78,7 @@
                 };
                 
                 canvas.ontouchmove = function(e) {
-                    e.preventDefault();
+                    // e.preventDefault();
                     if (mousePressed) {
                         if(penmode){
                             Draw(e.touches[0].offsetX, e.touches[0].offsetY, true);
@@ -90,7 +90,7 @@
                 };
     
                 canvas.ontouchend = function(e) {
-                    e.preventDefault();
+                    // e.preventDefault();
                     mousePressed = false;
                 };
                 canvas.ontouchcancel = function(e) {
