@@ -88,7 +88,7 @@
                         var drawX = (e.touches[0].pageX - rect.left) / ratio;
                         var drawY = (e.touches[0].pageY - rect.top) / ratio;
                         if(penmode){
-                            Draw(drawX, drawY, false);
+                            Draw(drawX, drawY, true);
                         }
                         else{
                             Erase(drawX, drawY, true);
