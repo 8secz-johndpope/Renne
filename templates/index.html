@@ -15,7 +15,6 @@
             background-image: url("{{ url_for('static', filename='data/background.jpg') }}");
         }
     </style>
-    <title>人呢？</title>
     <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/atom.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">    
@@ -30,8 +29,6 @@
         <div id="workplace">{% block workplace %}{% endblock %}
         </div>
     </div>
-    {% block bodyscript %}
-    
-    {% endblock %}
+    {% block bodyscript %}{% endblock %}
 </body>
 </html>

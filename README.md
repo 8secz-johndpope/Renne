@@ -28,16 +28,22 @@ Put the openpose and pose2seg model in models/
 
 ##### Test the model
 
-```python
+```shell
     cd <Work_Directory>
+    bash setup.sh
     pip3 install -r requirements.txt
+    cd model && bash download.sh
+    cd ..
     python3 predict_minimum.py
 ```
 
 ##### Test web application
 
-```python
+```shell
     cd <Work_Directory>
+    bash setup.sh
     pip3 install -r requirements.txt
+    cd model && bash download.sh
+    cd ..
     python3 app.py
 ```

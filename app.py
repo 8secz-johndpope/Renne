@@ -94,10 +94,6 @@ def generate():
         'uploaded_file', filename=session['name'].rsplit('.', 1)[0] + '_result.jpg')
     return render_template('result.html', result=res_url, width=width, height=height)
 
-# 还没用到
-@app.route('/exit', methods=['GET', 'POST'])
-def clear_file():
-    os.remove(os.path.split(session['path'])[0])
 
 # 页面0：上传图片
 @app.route('/')

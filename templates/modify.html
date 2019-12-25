@@ -3,7 +3,6 @@
 {% block head %}
     {{ super() }}
     <title>人呢？ - 编辑消除区域</title>
-    <!-- css文件存储在static/css下，通过下面的方式调用 -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modify.css') }}">
     {% endblock %}
 {% block workplace %}
@@ -180,14 +179,12 @@
             load_atom();
             var height = parseInt("{{ height }}");
             var width = parseInt("{{ width }}");
-            var ratio, offsetX, offsetY;
+            var offsetX, offsetY;
             ratio = 0.95 * Math.min(0.9 * window.innerHeight / height, window.innerWidth / width);
             offsetX = ratio * 0.5 * (window.innerWidth - width);
             offsetY = ratio * 0.5 * (0.9 * window.innerHeight - height);
             $("#region").css("transform", "translate(" + offsetX + "px," + offsetY + "px) " + "scale(" + ratio + ")");
         }
-
-    
 
 </script>
 {% endblock %}
