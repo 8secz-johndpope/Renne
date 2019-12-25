@@ -24,6 +24,11 @@
 <script>
     $(document).ready(function(){
         load_atom();
+        var param = 2.5 * (window.innerWidth / window.innerHeight - 0.8);
+        param = Math.round(15 + 15 * Math.max(Math.min(param, 1), 0));
+        $("#workplace").css("margin-left", param + "%").css("margin-right", param + "%");
+        $("#workplace").css("margin-left", param + "%").css("margin-right", param + "%");
+
         $(window).resize(function(){
             var param = 2.5 * (window.innerWidth / window.innerHeight - 0.8);
             param = Math.round(15 + 15 * Math.max(Math.min(param, 1), 0));

@@ -1,10 +1,6 @@
 
 function load_atom() {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
-
-    }
-    else {
-
         var canvas = document.querySelector('#atom'),
             ctx = canvas.getContext('2d')
         canvas.width = window.innerWidth;

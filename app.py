@@ -75,7 +75,7 @@ def modify_image():
         [mask * 0 for i in range(2)] + [mask * 255 for i in range(2)]))[1].tostring()
     mask_url = 'data:image/png;base64,' + str(base64.b64encode(maskcode))[2:-1]
 
-    file_url = url_for('uploaded_file', filename=session['name'])
+    file_url = url_for('uploaded_file', filename=session['name'].split('.')[0] + '_resize.jpg')
 
     return render_template('modify.html', mask=mask_url, image=file_url, width=width, height=height)
 
