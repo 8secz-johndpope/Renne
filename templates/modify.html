@@ -45,7 +45,6 @@
 
     $(document).ready(function () {
         var resizeTimer = null;
-        resize_event();
         InitThis();
     
         $(window).resize(function () {
@@ -177,7 +176,8 @@
             }
         }
     
-    
+        resize_event();
+
     });
     
 

@@ -1,5 +1,6 @@
 apt update
-apt install -y libsm6 libxrender1 libfontconfig1
+apt upgrade
+apt install -y libsm6 libxrender1 libfontconfig1 libxext6 libxrender-dev
 apt install -y python3-pip
 git clone https://github.com/Joinn99/Renne
 pip3 install -r requirements.txt 

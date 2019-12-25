@@ -37,7 +37,6 @@
 $(document).ready(function () {
     var resizeTimer = null;
     $("#map").css("width", "{{ width }}").css("height", "{{ height }}");
-    resize_event();
     $(".person").fadeTo(1, 0.25);
     $(".person").click(function () {
         if ($(this).attr("selection") == "1") {
@@ -79,7 +78,7 @@ $(document).ready(function () {
             resize_event();
         }, 500);
     });
-
+    resize_event();
 });
 </script>
 

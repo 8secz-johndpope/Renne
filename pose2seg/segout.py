@@ -3,6 +3,7 @@ import torch
 import cv2
 # from pose2seg.modeling.build_model import Pose2Seg
 
+
 def seg_init():
     if torch.cuda.is_available():
         model = torch.load('models/pose2seg-full.pth').cuda().eval()
@@ -10,6 +11,7 @@ def seg_init():
         model = torch.load('models/pose2seg-full.pth',
                            map_location=torch.device('cpu')).eval()
     return model
+
 
 def pose_seg(img, poses, seg):
 
@@ -35,6 +37,7 @@ def mask2poly(img):
 
 
 def mask_generate(masks, options):
+    options = dict(sorted(options.items(), key=lambda item: int(item[0])))
     options = np.array(list(options.values())).astype(np.uint8)
     mask = np.tensordot(options, masks, 1).astype(bool).astype(np.uint8)
     return mask
