@@ -37,7 +37,8 @@
     var mousePressed = false;
     var lastX, lastY;
     var canvas, ctx;
-    
+    var ratio;
+
     function convert() {
             $("#generate").attr("value", document.getElementById("maskedit").toDataURL("image/jpeg"));
         }
@@ -67,30 +68,36 @@
             ctx.drawImage(document.getElementById("mask"),0,0);
             if(document.body.ontouchstart !== undefined) {
                 canvas.ontouchstart = function(e) {
-                    // e.preventDefault();
+                    e.preventDefault();
                     mousePressed = true;
+                    var rect = canvas.getBoundingClientRect();
+                    var drawX = (e.touches[0].pageX - rect.left) / ratio;
+                    var drawY = (e.touches[0].pageY - rect.top) / ratio;
                     if(penmode){
-                        Draw(e.touches[0].offsetX, e.touches[0].offsetY, false);
+                        Draw(drawX, drawY, false);
                     }
                     else{
-                        Erase(e.touches[0].offsetX, e.touches[0].offsetY, true);
+                        Erase(drawX, drawY, true);
                     }
                 };
                 
                 canvas.ontouchmove = function(e) {
-                    // e.preventDefault();
+                    e.preventDefault();
                     if (mousePressed) {
+                        var rect = canvas.getBoundingClientRect();
+                        var drawX = (e.touches[0].pageX - rect.left) / ratio;
+                        var drawY = (e.touches[0].pageY - rect.top) / ratio;
                         if(penmode){
-                            Draw(e.touches[0].offsetX, e.touches[0].offsetY, true);
+                            Draw(drawX, drawY, false);
                         }
                         else{
-                            Erase(e.touches[0].offsetX, e.touches[0].offsetY, true);
+                            Erase(drawX, drawY, true);
                         }
                     }
                 };
     
                 canvas.ontouchend = function(e) {
-                    // e.preventDefault();
+                    e.preventDefault();
                     mousePressed = false;
                 };
                 canvas.ontouchcancel = function(e) {
