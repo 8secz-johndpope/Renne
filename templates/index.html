@@ -11,7 +11,7 @@
         font-family: "DefaultFont";
         src: url("{{ url_for('static', filename='font/HYShiGuangTiW.ttf') }}");
         } */
-        body {
+        canvas#atom {
             background-image: url("{{ url_for('static', filename='data/background.jpg') }}");
         }
     </style>
@@ -31,6 +31,7 @@
         </div>
     </div>
     {% block bodyscript %}
+    
     {% endblock %}
 </body>
 </html>
