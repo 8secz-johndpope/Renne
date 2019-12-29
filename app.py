@@ -55,8 +55,13 @@ def select():
             cv2.imwrite(session['path'].split('.')[0] + '_resize.jpg', img)
             poses = body.detect_pose(img, POSE)
             masks = segout.pose_seg(img, poses, SEG)
-            joblib.dump((masks), session['path'].split(
-                '.')[0] + '.msk', compress=3)
+            if masks:
+                joblib.dump((masks), session['path'].split(
+                    '.')[0] + '.msk', compress=3)
+            else:
+                joblib.dump((np.zeros((1, height, width)).astype(np.uint8)), session['path'].split(
+                    '.')[0] + '.msk', compress=3)
+
             mask_poly = [segout.mask2poly(mask) for mask in masks]
 
             file_url = url_for('uploaded_file', filename=session['name'].split('.')[0] + '_resize.jpg')

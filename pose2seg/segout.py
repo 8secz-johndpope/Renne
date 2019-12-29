@@ -31,13 +31,14 @@ def mask2poly(img):
     contours = sorted(contours, key=cv2.contourArea, reverse=True)[0]
     epsilon = 0.002 * cv2.arcLength(contours, True)
     approx = cv2.approxPolyDP(contours, epsilon, True).reshape(-1, 2)
-    # hull = cv2.convexHull(contours[0])
-    # return str(approx.reshape(-1,2))
     return ' '.join('{:d},{:d}'.format(point[0], point[1]) for point in approx)
 
 
 def mask_generate(masks, options):
-    select = np.zeros(len(options))
+    if options:
+        select = np.zeros(len(options))
+    else:
+        select = np.zeros(1)
     for key, value in options.items():
         select[int(key)] = int(value)
     mask = np.tensordot(select.astype(np.uint8), masks, 1).astype(bool).astype(np.uint8)
