@@ -55,7 +55,7 @@ def select():
             cv2.imwrite(session['path'].split('.')[0] + '_resize.jpg', img)
             poses = body.detect_pose(img, POSE)
             masks = segout.pose_seg(img, poses, SEG)
-            if masks:
+            if np.any(masks):
                 joblib.dump((masks), session['path'].split(
                     '.')[0] + '.msk', compress=3)
             else:

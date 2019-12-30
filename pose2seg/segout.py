@@ -18,9 +18,9 @@ def pose_seg(img, poses, seg):
     masks = []
     for pose in poses:
         masks.append(seg([img.astype(float)], [[pose]])[0][0])
-    if masks:
-        masks = deal_masks(masks)
-        masks = denoise(masks, 16)
+    # if masks:
+    #     masks = deal_masks(masks)
+    #     masks = denoise(masks, 16)
 
     return np.array(masks)
 
